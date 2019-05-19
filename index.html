@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Anno 1800 Simple Calculator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Cinzel&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Cinzel', serif;
+            color: #36281b;
+            overflow-y: scroll;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        #app {
+            z-index: 1;
+            position: relative;
+        }
+
+        #content {
+            padding: 10px;
+            max-width: 600px;
+            margin: 20px auto;
+            background: rgba(230, 230, 230, 0.5);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        #logo {
+            margin: 20px auto;
+            display: block;
+        }
+
+        h1 {
+            text-align: center;
+            color: #36281b;
+            margin-bottom: 50px;
+        }
+
+        #controls {
+            text-align: center;
+        }
+
+        #desired-population-label {
+            display: block;
+        }
+
+        .output-category {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .element {
+            width: 100px;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .element__image img {
+            height: 50px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .element__title {
+            font-weight: bold;
+            word-break: break-word;
+            text-align: center;
+        }
+
+        .element__value {
+            margin-top: auto;
+            text-align: center;
+        }
+
+
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+
+
+
+
+
+
+        .slidecontainer {
+            display: flex;
+            margin: 5px auto;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slider {
+            margin: 5px;
+            -webkit-appearance: none;
+            appearance: none;
+            max-width: 300px;
+            height: 25px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            border: 0;
+            border-radius: 0;
+            width: 25px;
+            height: 25px;
+            background: #36281b;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            border: 0;
+            border-radius: 0;
+            width: 25px;
+            height: 25px;
+            background: #36281b;
+            cursor: pointer;
+        }
+    </style>
+    <script defer src="dist/main.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div id="content">
+            <h1>
+                <img id="logo" src="src/assets/1800_logo.png" height="84" width="270" alt="Anno 1800">
+                Simple Calculator
+            </h1>
+            <div id="controls">
+                <label for="desired-population" id="desired-population-label">Choose your population size</label>
+                <div class="slidecontainer">
+                    <svg width="24" height="24" viewBox="-10 -10 44 44" fill="#36281b">
+                        <path
+                            d="M20.822 18.096c-3.439-.794-6.64-1.49-5.09-4.418 4.72-8.912 1.251-13.678-3.732-13.678-5.082 0-8.464 4.949-3.732 13.678 1.597 2.945-1.725 3.641-5.09 4.418-3.073.71-3.188 2.236-3.178 4.904l.004 1h23.99l.004-.969c.012-2.688-.092-4.222-3.176-4.935z" />
+                    </svg>
+                    <input v-model="desiredPopulation" type="range" min="0" max="20000" value="0"
+                        id="desired-population" class="slider">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#36281b">
+                        <path
+                            d="M17.997 18h-11.995l-.002-.623c0-1.259.1-1.986 1.588-2.33 1.684-.389 3.344-.736 2.545-2.209-2.366-4.363-.674-6.838 1.866-6.838 2.491 0 4.226 2.383 1.866 6.839-.775 1.464.826 1.812 2.545 2.209 1.49.344 1.589 1.072 1.589 2.333l-.002.619zm4.811-2.214c-1.29-.298-2.49-.559-1.909-1.657 1.769-3.342.469-5.129-1.4-5.129-1.265 0-2.248.817-2.248 2.324 0 3.903 2.268 1.77 2.246 6.676h4.501l.002-.463c0-.946-.074-1.493-1.192-1.751zm-22.806 2.214h4.501c-.021-4.906 2.246-2.772 2.246-6.676 0-1.507-.983-2.324-2.248-2.324-1.869 0-3.169 1.787-1.399 5.129.581 1.099-.619 1.359-1.909 1.657-1.119.258-1.193.805-1.193 1.751l.002.463z" />
+                    </svg>
+
+                </div>
+
+            </div>
+            <div id="output" v-cloak>
+                <div id="population">
+                    <div class="output-category">
+                        <div class="element" v-for="(value, socialClass) in population">
+                            <div class="element__image"><img :src="pupulationImage(socialClass)" /></div>
+                            <div class="element__title">{{pupulationName(socialClass)}}</div>
+                            <div class="element__value">{{value}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="buildings-comsume">
+                    <div class="output-category">
+                        <div class="element" v-for="(value, building) in buildingsConsume">
+                            <div class="element__image"><img :src="buildingImage(building)" /></div>
+                            <div class="element__title">{{buildingName(building)}}</div>
+                            <div class="element__value">{{(+value).toFixed(2)}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="buildings-producers">
+                    <div class="output-category">
+                        <div class="element" v-for="(value, building) in buildingsProducers">
+                            <div class="element__image"><img :src="buildingImage(building)" /></div>
+                            <div class="element__title">{{buildingName(building)}}</div>
+                            <div class="element__value">{{(+value).toFixed(2)}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="buildings-non-producers">
+                    <div class="output-category">
+                        <div class="element" v-for="(value, building) in buildingsNonProducers">
+                            <div class="element__image"><img :src="buildingImage(building)" /></div>
+                            <div class="element__title">{{buildingName(building)}}</div>
+                            <div class="element__value">{{+value}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <canvas id="canvas"></canvas>
+</body>
+
+</html>
